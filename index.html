@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Reader</title>
+    <style>
+ 
+/* Background Gradient */
+body {
+    background: linear-gradient(to right, #00b3ff, #0372fb);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: 0; /* Prevent scrolling */
+}
+
+/* English Alphabets */
+.english-alphabets {
+    font-size: 20px;
+    color: rgb(249, 11, 11); /* Semi-transparent white */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 1; /* Move above the background */
+    font-weight: bold; /* Make alphabets bold */
+}
+
+/* Tamil Alphabets */
+.tamil-alphabets {
+    font-size: 20px;
+    color: rgb(254, 6, 6); /* Semi-transparent white */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    direction: rtl; /* Right-to-left text direction for Tamil */
+    z-index: 1; /* Move above the background */
+    font-weight: bold; /* Make alphabets bold */
+}
+
+/* Container Styles */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative; /* Ensure it's above the alphabet overlays */
+    z-index: 2; /* Ensure it's above the alphabet overlays */
+}
+
+
+/* New Effects */
+
+/* Parallax Effect on Background */
+body {
+    perspective: 1px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(to bottom, #00b3ff, #0372fb);
+    transform: translateZ(-1px) scale(2);
+}
+
+/* Neon Glow on English Alphabets */
+.english-alphabets {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 1; /* Move above the background */
+    font-weight: bold; /* Make alphabets bold */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3), 0 0 40px #fff, 0 0 70px #fff, 0 0 80px #fff, 0 0 100px #fff, 0 0 150px #fff;
+}
+
+/* Neon Glow on Tamil Alphabets */
+.tamil-alphabets {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    direction: rtl; /* Right-to-left text direction for Tamil */
+    z-index: 1; /* Move above the background */
+    font-weight: bold; /* Make alphabets bold */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3), 0 0 40px #fff, 0 0 70px #fff, 0 0 80px #fff, 0 0 100px #fff, 0 0 150px #fff;
+}
+
+/* Glowing Hover Effect for Controls */
+.controls button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Shimmer Effect on Loading */
+.loading {
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(to right, #00b3ff, #0372fb);
+    background-size: 200% auto;
+    animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+
+
+
+    
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #333;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+    
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    
+        /* Upload Section Styles */
+        .upload-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+    
+        .file-upload-label:hover {
+            background-color: #0056b3;
+        }
+    
+        #file-upload {
+            display: none;
+        }
+    
+        /* Language Selection Styles */
+        .language-selection {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .language-selection label {
+            font-size: 1.2em;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    
+        #language-select {
+            padding: 5px 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+    
+        #language-select:focus {
+            border-color: #007BFF;
+        }
+    
+        /* Controls Styles */
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .controls button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+    
+        .controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    
+        .controls button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+    
+        /* Loading Styles */
+        .loading {
+            text-align: center;
+            display: none;
+        }
+    
+        /* Story Content Styles */
+        .story-content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            min-height: 300px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+    
+        .story-content:hover {
+            background-color: #f0f0f0;
+        }
+    
+        .story-content:before {
+            content: "📖";
+            font-size: 2em;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            color: #333;
+            font-size: 0.9em;
+            border-top: 1px solid #ddd;
+        }
+    
+        /* Additional CSS Features */
+        .file-upload-label:active {
+            background-color: #004080;
+        }
+    
+        .header h1 span {
+            display: block;
+            font-size: 0.6em;
+            color: #555;
+        }
+    
+        .container:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+    
+        #language-select option {
+            padding: 5px;
+        }
+    
+        #language-select:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+    
+        .controls button:active {
+            transform: scale(0.98);
+        }
+    
+        .upload-section:before {
+            content: "⬆️";
+            font-size: 2em;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    
+        #language-select:before {
+            content: "🌐";
+            font-size: 1.5em;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+    
+        .controls button:first-of-type {
+            margin-left: 0;
+        }
+    
+        .controls button:last-of-type {
+            margin-right: 0;
+        }
+    
+        .story-content em {
+            font-style: italic;
+            color: #007BFF;
+        }
+    
+        .story-content strong {
+            font-weight: bold;
+            color: #333;
+        }
+    
+        .story-content p {
+            margin: 10px 0;
+        }
+    
+        .story-content a {
+            color:  #007BFF;
+            text-decoration: none;
+        }
+    
+        .story-content a:hover {
+            text-decoration: underline;
+        }
+    
+        .story-content mark {
+            background-color: #ffeb3b;
+        }
+    
+        .header h1:before {
+            content: "📚";
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+    
+        .footer:before {
+            content: "©";
+            margin-right: 5px;
+        }
+    
+        .footer p {
+            margin: 0;
+        }
+    
+        .story-content blockquote {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-left: 5px solid #007BFF;
+        }
+    
+        /* Highlighting the word being read */
+        .highlight {
+            background-color: #ffeb3b;
+            border-radius: 3px;
+            animation: highlight 0.5s ease;
+        }
+    
+        @keyframes highlight {
+            from {
+                background-color: #fff;
+            }
+            to {
+                background-color: #ffeb3b;
+            }
+        }
+    </style>
+    
+      
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Story Reader <span>Your Personal Story Companion</span></h1>
+            <p>Upload your story and enjoy reading in your preferred language.</p>
+        </header>
+
+        <div class="upload-section">
+            <label for="file-upload" class="file-upload-label">Upload Your Story</label>
+            <input type="file" id="file-upload" accept=".pdf, .doc, .docx, .txt">
+        </div>
+
+        <div class="language-selection">
+            <label for="language-select">Choose Language:</label>
+            <select id="language-select">
+                <option value="en">English</option>
+                <option value="ta">Tamil</option>
+                <!-- Add more language options as needed -->
+            </select>
+            <button id="translate-button">Translate</button>
+        </div>
+
+        <div class="controls">
+            <button id="prev-page" disabled>Previous</button>
+            <button id="next-page" disabled>Next</button>
+            <button id="tts-button">Read Aloud</button>
+        </div>
+
+        <div class="loading" id="loading">Loading...</div>
+        <div class="story-content" id="story-content">
+            <!-- The story content will be dynamically inserted here -->
+        </div>
+
+        <footer class="footer">
+            <p>© 2024 Story Reader. All rights reserved.</p>
+        </footer>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vitalets/google-translate-api"></script>
+<script>
+    let storyContent = '';
+    let translatedContent = '';
+    let currentPage = 0;
+    const pageSize = 100000;
+    let isTranslated = false;
+    let language = 'en'; // Default language is English
+
+    document.getElementById('file-upload').addEventListener('change', handleFileUpload);
+    document.getElementById('translate-button').addEventListener('click', translateStory);
+    document.getElementById('tts-button').addEventListener('click', readAloud);
+    document.getElementById('language-select').addEventListener('change', function () {
+        language = this.value;
+    });
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                storyContent = e.target.result;
+                currentPage = 0;
+                displayPage();
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    async function translateStory() {
+        if (!storyContent) {
+            alert('Please upload a file first.');
+            return;
+        }
+
+        if (language === 'ta') {
+            await googleTranslate(storyContent, { to: 'en' })
+                .then((res) => {
+                    translatedContent = res.text;
+                    isTranslated = true;
+                    displayPage();
+                })
+                .catch((err) => {
+                    console.error('Translation Error:', err);
+                });
+        } else {
+            await googleTranslate(storyContent, { to: 'ta' })
+                .then((res) => {
+                    translatedContent = res.text;
+                    isTranslated = true;
+                    displayPage();
+                })
+                .catch((err) => {
+                    console.error('Translation Error:', err);
+                });
+        }
+    }
+
+    function displayPage() {
+        const start = currentPage * pageSize;
+        const end = Math.min(start + pageSize, isTranslated ? translatedContent.length : storyContent.length);
+        const pageContent = isTranslated ? translatedContent.slice(start, end) : storyContent.slice(start, end);
+        const storyElement = document.getElementById('story-content');
+        storyElement.innerText = pageContent;
+    }
+
+    function readAloud() {
+        const content = isTranslated ? translatedContent : storyContent;
+        const utterance = new SpeechSynthesisUtterance(content);
+        utterance.lang = language === 'ta' ? 'ta-IN' : 'en-US'; // Set language for speech synthesis
+    
+        // Add more innovative narrations
+        utterance.voice = getInnovativeVoice(); // Get an innovative voice for narration
+        utterance.rate = 1.2; // Adjust the speech rate for expressive narration
+        utterance.pitch = 1.5; // Adjust the pitch for expressive narration
+    
+        window.speechSynthesis.speak(utterance);
+    }
+    
+    // Function to get an innovative voice for narration
+    function getInnovativeVoice() {
+        const voices = window.speechSynthesis.getVoices();
+    
+        // Filter voices to find the most suitable one for narration
+        const suitableVoice = findSuitableVoice(voices);
+    
+        return suitableVoice;
+    }
+    
+    function findSuitableVoice(voices) {
+        // Implement logic to analyze voices and choose the most suitable one
+        // For example, analyze voice characteristics such as language, gender, and quality
+        // You can also consider user preferences or specific criteria for narration
+    
+        // For demonstration purposes, let's randomly select a voice from the available voices
+        const randomIndex = Math.floor(Math.random() * voices.length);
+        const randomVoice = voices[randomIndex];
+    
+        return randomVoice;
+    }
+    
+    
+</script>
+</body>
+</html>
